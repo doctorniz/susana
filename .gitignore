@@ -1,0 +1,5 @@
+/susanah
+/dist/
+/config/
+.env
+*.local.yaml

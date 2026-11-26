@@ -1,0 +1,53 @@
+# Susanah config. Copy to config/susanah.yaml and edit.
+# Any ${VAR} is replaced with that environment variable, so keep secrets in .env.
+
+listen: ":8686"
+interval: 1m
+
+integrations:
+  # The *arr apps share one integration. Find the API key under Settings > General.
+  - name: sonarr
+    kind: sonarr
+    url: http://sonarr:8989
+    api_key: ${SONARR_API_KEY}
+  - name: radarr
+    kind: radarr
+    url: http://radarr:7878
+    api_key: ${RADARR_API_KEY}
+  - name: prowlarr
+    kind: prowlarr
+    url: http://prowlarr:9696
+    api_key: ${PROWLARR_API_KEY}
+
+  # Any app with an HTTP endpoint, including your own. Pick what "healthy" means:
+  # expect_status, body_contains, or json_field + json_equals.
+  - name: jellyfin
+    kind: http
+    url: http://jellyfin:8096/health
+    body_contains: Healthy
+  - name: home-assistant
+    kind: http
+    url: http://homeassistant:8123/api/
+    api_key: ${HA_TOKEN}            # sent as "Authorization: Bearer ..."
+  - name: my-app
+    kind: http
+    url: http://my-app:3000/health
+    json_field: status
+    json_equals: ok
+
+notifiers:
+  - kind: discord
+    url: ${DISCORD_WEBHOOK_URL}
+  # - kind: telegram
+  #   token: ${TELEGRAM_BOT_TOKEN}
+  #   chat_id: "123456789"
+  # - kind: ntfy
+  #   url: https://ntfy.sh/your-secret-topic
+  #   min_level: critical          # only critical alerts on this channel
+
+# Optional. Without it Susanah still alerts; with it alerts explain themselves.
+# llm:
+#   provider: anthropic            # or "openai" for any OpenAI-compatible API
+#   api_key: ${LLM_API_KEY}
+#   model: your-model-id
+#   # base_url: https://openrouter.ai/api/v1   # OpenRouter, Groq, or http://ollama:11434/v1

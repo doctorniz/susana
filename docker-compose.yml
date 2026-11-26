@@ -1,0 +1,12 @@
+services:
+  susanah:
+    image: ghcr.io/doctorniz/susana:latest
+    build: .
+    container_name: susanah
+    restart: unless-stopped
+    ports:
+      - "8686:8686"
+    volumes:
+      - ./config:/config:ro
+    env_file:
+      - .env
