@@ -1,24 +1,25 @@
 # Architecture
 
-Susanah is a plain monitoring pipeline. The LLM sits off to the side and is only called when there is something to explain.
+Susana is a plain monitoring pipeline. The LLM sits off to the side and is only called when there is something to explain.
 
 ```
 integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
                    │  ▲
                    ▼  │
-               status page / API      LLM (optional, BYOK)
+        status page / API / MCP       LLM (optional, BYOK)
 ```
 
 | Package | Role |
 | --- | --- |
-| `internal/config` | Loads `susanah.yaml`, expands `${VAR}` from the environment |
+| `internal/config` | Loads `susana.yaml`, expands `${VAR}` from the environment |
 | `internal/integration` | The plugin interface and registry |
 | `internal/integration/arr` | One shared integration for Sonarr, Radarr, Lidarr, Readarr, Prowlarr |
 | `internal/integration/httpcheck` | Generic HTTP check for any app, including self-built ones |
 | `internal/monitor` | Runs checks on an interval, tracks state, notifies on change |
 | `internal/notify` | Send-only chat channels |
 | `internal/llm` | Provider interface: Anthropic and any OpenAI-compatible API |
-| `internal/server` | Status page, `/api/status`, `/healthz` |
+| `internal/server` | Status page, JSON API under `/api`, `/healthz`, bearer-token auth |
+| `internal/mcpserver` | Read-only MCP tools for AI agents, served at `/mcp` |
 
 ## Principles
 
@@ -32,12 +33,13 @@ integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
 1. Create `internal/integration/<name>/<name>.go`.
 2. Implement `integration.Integration` (`Name`, `Kind`, `Check`).
 3. Call `integration.Register("<kind>", New)` in an `init` func.
-4. Import the package in `cmd/susanah/main.go`.
+4. Import the package in `cmd/susana/main.go`.
 5. Add tests using `httptest` with a recorded response from the real app.
 
 ## Roadmap
 
 - **v0.1:** *arr apps, generic HTTP, Discord/Telegram/ntfy, LLM explanations (this scaffold)
+- **v0.1.x:** read-only HTTP API and MCP server (done)
 - **v0.2:** Docker socket, host metrics, Proxmox API, Jellyfin, Home Assistant, Audiobookshelf, n8n
 - **v0.3:** SQLite history, incident grouping, Telegram/Discord chat (ask questions)
 - **v0.4:** Remote satellites, Suwayomi, qBittorrent, BookOrbit, Hermes Agent

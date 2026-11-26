@@ -1,4 +1,4 @@
-// Command susanah is a self-hosted, read-only monitoring agent for homelabs.
+// Command susana is a self-hosted, read-only monitoring agent for homelabs.
 package main
 
 import (
@@ -16,6 +16,7 @@ import (
 	"github.com/doctorniz/susana/internal/config"
 	"github.com/doctorniz/susana/internal/integration"
 	"github.com/doctorniz/susana/internal/llm"
+	"github.com/doctorniz/susana/internal/mcpserver"
 	"github.com/doctorniz/susana/internal/monitor"
 	"github.com/doctorniz/susana/internal/notify"
 	"github.com/doctorniz/susana/internal/server"
@@ -28,11 +29,11 @@ import (
 var version = "dev"
 
 func main() {
-	cfgPath := flag.String("config", "/config/susanah.yaml", "path to the config file")
+	cfgPath := flag.String("config", "/config/susana.yaml", "path to the config file")
 	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Parse()
 	if *showVersion {
-		fmt.Println("susanah", version)
+		fmt.Println("susana", version)
 		return
 	}
 	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
@@ -71,7 +72,7 @@ func run(cfgPath string, log *slog.Logger) error {
 		return err
 	}
 
-	log.Info("starting susanah", "version", version, "integrations", len(apps), "notifiers", len(notifiers),
+	log.Info("starting susana", "version", version, "integrations", len(apps), "notifiers", len(notifiers),
 		"llm", provider != nil, "listen", cfg.Listen)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -80,7 +81,11 @@ func run(cfgPath string, log *slog.Logger) error {
 	mon := monitor.New(apps, notifiers, provider, cfg.Interval, log)
 	go mon.Run(ctx)
 
-	srv := &http.Server{Addr: cfg.Listen, Handler: server.New(mon), ReadHeaderTimeout: 5 * time.Second}
+	if cfg.APIToken == "" {
+		log.Warn("api_token is not set: /api and /mcp are open to anyone who can reach this port")
+	}
+	mcpSrv := mcpserver.Handler(mcpserver.New(mon, version))
+	srv := &http.Server{Addr: cfg.Listen, Handler: server.New(mon, mcpSrv, cfg.APIToken), ReadHeaderTimeout: 5 * time.Second}
 	go func() {
 		<-ctx.Done()
 		shut, cancel := context.WithTimeout(context.Background(), 5*time.Second)

@@ -1,8 +1,8 @@
 services:
-  susanah:
+  susana:
     image: ghcr.io/doctorniz/susana:latest
     build: .
-    container_name: susanah
+    container_name: susana
     restart: unless-stopped
     ports:
       - "8686:8686"

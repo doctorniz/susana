@@ -1,7 +1,7 @@
 .PHONY: build test lint run docker
 
 build:
-	go build -o susanah ./cmd/susanah
+	go build -o susana ./cmd/susana
 
 test:
 	go test -race ./...
@@ -11,7 +11,7 @@ lint:
 	go vet ./...
 
 run: build
-	./susanah -config config/susanah.yaml
+	./susana -config config/susana.yaml
 
 docker:
-	docker build -t susanah:dev .
+	docker build -t susana:dev .

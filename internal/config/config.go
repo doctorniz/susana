@@ -1,4 +1,4 @@
-// Package config loads susanah.yaml. Any ${VAR} in the file is replaced with
+// Package config loads susana.yaml. Any ${VAR} in the file is replaced with
 // the environment variable of that name, so secrets can stay out of the file.
 package config
 
@@ -12,6 +12,7 @@ import (
 
 type Config struct {
 	Listen       string        `yaml:"listen"`
+	APIToken     string        `yaml:"api_token"` // bearer token for /api and /mcp; empty = open
 	Interval     time.Duration `yaml:"interval"`
 	Integrations []Integration `yaml:"integrations"`
 	Notifiers    []Notifier    `yaml:"notifiers"`

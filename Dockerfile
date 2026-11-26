@@ -4,11 +4,11 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 ARG VERSION=dev
-RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" -o /susanah ./cmd/susanah
+RUN CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" -o /susana ./cmd/susana
 
 FROM gcr.io/distroless/static-debian12:nonroot
-COPY --from=build /susanah /susanah
+COPY --from=build /susana /susana
 EXPOSE 8686
 USER nonroot:nonroot
-ENTRYPOINT ["/susanah"]
-CMD ["-config", "/config/susanah.yaml"]
+ENTRYPOINT ["/susana"]
+CMD ["-config", "/config/susana.yaml"]

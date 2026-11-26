@@ -1,6 +1,6 @@
 // Package integration defines the plugin model every monitored app implements.
 //
-// Susanah v1 is read-only: integrations observe and report, they never change
+// Susana v1 is read-only: integrations observe and report, they never change
 // state in the app they watch.
 package integration
 

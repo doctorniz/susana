@@ -24,6 +24,18 @@ type AppState struct {
 	Results []integration.Result `json:"results"`
 }
 
+// Event is one state change of one check.
+type Event struct {
+	Time    time.Time          `json:"time"`
+	App     string             `json:"app"`
+	Check   string             `json:"check"`
+	From    integration.Status `json:"from,omitempty"`
+	To      integration.Status `json:"to"`
+	Summary string             `json:"summary"`
+}
+
+const maxEvents = 500
+
 type Monitor struct {
 	apps      []integration.Integration
 	notifiers []notify.Notifier
@@ -34,6 +46,7 @@ type Monitor struct {
 	mu     sync.RWMutex
 	state  map[string]AppState
 	last   map[string]integration.Status // key: app/check
+	events []Event                       // oldest first, capped at maxEvents
 	primed bool
 }
 
@@ -90,6 +103,12 @@ func (m *Monitor) RunOnce(ctx context.Context) {
 			m.last[key] = r.Status
 			if prev == r.Status {
 				continue
+			}
+			if seen || r.Status != integration.StatusOK {
+				m.events = append(m.events, Event{Time: r.CheckedAt, App: s.Name, Check: r.Check, From: prev, To: r.Status, Summary: r.Summary})
+				if len(m.events) > maxEvents {
+					m.events = m.events[len(m.events)-maxEvents:]
+				}
 			}
 			// On the first run only report problems, not "everything is fine".
 			if (!seen || !m.primed) && r.Status == integration.StatusOK {
@@ -160,4 +179,52 @@ func (m *Monitor) Snapshot() []AppState {
 		return out[i].Name < out[j].Name
 	})
 	return out
+}
+
+// App returns the latest state of one app by name.
+func (m *Monitor) App(name string) (AppState, bool) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	s, ok := m.state[name]
+	return s, ok
+}
+
+// Events returns up to limit state changes, newest first, optionally for one app.
+func (m *Monitor) Events(app string, limit int) []Event {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	if limit <= 0 || limit > maxEvents {
+		limit = maxEvents
+	}
+	out := []Event{}
+	for i := len(m.events) - 1; i >= 0 && len(out) < limit; i-- {
+		if app == "" || m.events[i].App == app {
+			out = append(out, m.events[i])
+		}
+	}
+	return out
+}
+
+// Summary counts apps by status.
+type Summary struct {
+	Overall  integration.Status         `json:"overall"`
+	Apps     int                        `json:"apps"`
+	ByStatus map[integration.Status]int `json:"by_status"`
+	Problems []AppState                 `json:"problems"`
+}
+
+// Summarize returns overall health and every app that is not OK.
+func (m *Monitor) Summarize() Summary {
+	snap := m.Snapshot()
+	sum := Summary{Overall: integration.StatusOK, Apps: len(snap), ByStatus: map[integration.Status]int{}, Problems: []AppState{}}
+	for _, s := range snap {
+		sum.ByStatus[s.Status]++
+		if s.Status.Severity() > sum.Overall.Severity() {
+			sum.Overall = s.Status
+		}
+		if s.Status != integration.StatusOK {
+			sum.Problems = append(sum.Problems, s)
+		}
+	}
+	return sum
 }

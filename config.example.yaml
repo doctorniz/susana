@@ -1,8 +1,12 @@
-# Susanah config. Copy to config/susanah.yaml and edit.
+# Susana config. Copy to config/susana.yaml and edit.
 # Any ${VAR} is replaced with that environment variable, so keep secrets in .env.
 
 listen: ":8686"
 interval: 1m
+
+# Bearer token for the JSON API (/api) and the MCP server (/mcp).
+# Leave it set: without it anyone on your network can read your homelab status.
+api_token: ${SUSANA_API_TOKEN}
 
 integrations:
   # The *arr apps share one integration. Find the API key under Settings > General.
@@ -45,7 +49,7 @@ notifiers:
   #   url: https://ntfy.sh/your-secret-topic
   #   min_level: critical          # only critical alerts on this channel
 
-# Optional. Without it Susanah still alerts; with it alerts explain themselves.
+# Optional. Without it Susana still alerts; with it alerts explain themselves.
 # llm:
 #   provider: anthropic            # or "openai" for any OpenAI-compatible API
 #   api_key: ${LLM_API_KEY}
