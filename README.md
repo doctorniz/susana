@@ -32,10 +32,13 @@ Everything lives in `config/susana.yaml`; see [config.example.yaml](config.examp
 
 | Kind | Apps | Checks |
 | --- | --- | --- |
+| `proxmox` | Proxmox VE node or cluster | Nodes online, CPU and memory pressure, VMs and LXCs that should be running, storage usage |
+| `host` | The Linux machine Susana runs on | Load per core, memory, free space on chosen mounts |
+| `docker` | Docker containers | Unhealthy, restarting, crashed (non-zero exit), or expected-but-missing containers |
 | `sonarr`, `radarr`, `lidarr`, `readarr`, `prowlarr` | The *arr apps | Reachability, API key, every warning from the app's own health page |
 | `http` | Anything with an HTTP endpoint, including your own apps | Status code, body text, or a JSON field value |
 
-On the roadmap: Proxmox, Docker, host metrics, Jellyfin, Home Assistant, Audiobookshelf, n8n, Suwayomi, qBittorrent, BookOrbit, Hermes Agent and more.
+Thresholds are configurable per integration; see [config.example.yaml](config.example.yaml). On the roadmap: remote hosts via satellites, Proxmox Backup Server, SMART and temperatures, Jellyfin, Home Assistant, Audiobookshelf, n8n, Suwayomi, qBittorrent, BookOrbit, Hermes Agent and more.
 
 ### Notifiers
 

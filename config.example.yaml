@@ -9,6 +9,33 @@ interval: 1m
 api_token: ${SUSANA_API_TOKEN}
 
 integrations:
+  # Proxmox VE. Create a read-only API token (role PVEAuditor) under
+  # Datacenter > Permissions > API Tokens.
+  - name: proxmox
+    kind: proxmox
+    url: https://pve.lan:8006
+    api_key: ${PROXMOX_TOKEN}      # user@realm!tokenid=secret
+    insecure_skip_verify: true     # Proxmox ships a self-signed certificate
+    expect_running: all            # or a list of guest names, or "none"
+    ignore: [test-vm]
+    # disk_warn: 85
+    # disk_crit: 95
+
+  # The machine Susana runs on. Needs the host's /proc and / mounted (see docker-compose.yml).
+  - name: this-host
+    kind: host
+    proc_path: /host/proc
+    root: /host/root
+    mounts: [/, /mnt/media]
+
+  # Docker containers, through a read-only socket proxy (see docker-compose.yml).
+  # Alerts on unhealthy, restarting, or crashed (non-zero exit) containers.
+  - name: docker
+    kind: docker
+    url: http://docker-proxy:2375
+    expect_running: [jellyfin, sonarr, radarr]
+    ignore: [watchtower]
+
   # The *arr apps share one integration. Find the API key under Settings > General.
   - name: sonarr
     kind: sonarr
