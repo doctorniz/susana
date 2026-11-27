@@ -1,6 +1,6 @@
 // Package httpcheck is the generic integration for any app with an HTTP
 // endpoint, including your own self-built apps. Configure what "healthy"
-// looks like and Susanah checks it.
+// looks like and Susana checks it.
 package httpcheck
 
 import (

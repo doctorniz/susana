@@ -44,6 +44,13 @@ func TestNotifiesOnChangeOnly(t *testing.T) {
 	if len(n.got) != 2 {
 		t.Fatalf("got %d messages, want 2: %+v", len(n.got), n.got)
 	}
+	ev := m.Events("", 0)
+	if len(ev) != 2 || ev[0].To != integration.StatusOK || ev[1].To != integration.StatusCritical {
+		t.Errorf("events = %+v", ev)
+	}
+	if sum := m.Summarize(); sum.Overall != integration.StatusOK || sum.Apps != 1 {
+		t.Errorf("summary = %+v", sum)
+	}
 	if n.got[0].Status != integration.StatusCritical || n.got[1].Status != integration.StatusOK {
 		t.Errorf("unexpected messages: %+v", n.got)
 	}
