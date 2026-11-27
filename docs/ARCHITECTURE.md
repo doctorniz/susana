@@ -17,6 +17,11 @@ integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
 | `internal/integration/proxmox` | Proxmox VE nodes, guests and storage via a read-only API token |
 | `internal/integration/host` | Load, memory and disk of a Linux host from `/proc` and `statfs` |
 | `internal/integration/docker` | Container state via the Engine API (socket or socket proxy) |
+| `internal/integration/jellyfin` | Jellyfin server state, scheduled tasks and streams |
+| `internal/integration/homeassistant` | Home Assistant core state, watched entities and updates |
+| `internal/integration/audiobookshelf` | Audiobookshelf status, libraries and backups |
+| `internal/integration/n8n` | n8n readiness and failed workflow executions |
+| `internal/integration/apiclient` | Shared JSON-over-HTTP helper for the app integrations |
 | `internal/integration/httpcheck` | Generic HTTP check for any app, including self-built ones |
 | `internal/monitor` | Runs checks on an interval, tracks state, notifies on change |
 | `internal/notify` | Send-only chat channels |
@@ -44,7 +49,8 @@ integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
 - **v0.1:** *arr apps, generic HTTP, Discord/Telegram/ntfy, LLM explanations (this scaffold)
 - **v0.1.x:** read-only HTTP API and MCP server (done)
 - **v0.1.x:** Proxmox, host and Docker checks (done)
-- **v0.2:** Jellyfin, Home Assistant, Audiobookshelf, n8n, Proxmox Backup Server, SMART and temperatures
+- **v0.1.x:** Jellyfin, Home Assistant, Audiobookshelf and n8n checks (done)
+- **v0.2:** Proxmox Backup Server, SMART and temperatures
 - **v0.3:** SQLite history, incident grouping, Telegram/Discord chat (ask questions)
 - **v0.4:** Remote satellites, Suwayomi, qBittorrent, BookOrbit, Hermes Agent
 - **Later:** approved actions, weekly digest, community plugin registry

@@ -36,9 +36,13 @@ Everything lives in `config/susana.yaml`; see [config.example.yaml](config.examp
 | `host` | The Linux machine Susana runs on | Load per core, memory, free space on chosen mounts |
 | `docker` | Docker containers | Unhealthy, restarting, crashed (non-zero exit), or expected-but-missing containers |
 | `sonarr`, `radarr`, `lidarr`, `readarr`, `prowlarr` | The *arr apps | Reachability, API key, every warning from the app's own health page |
+| `jellyfin` | Jellyfin | Reachability, API key, pending restart, failed scheduled tasks, active and transcoding streams |
+| `homeassistant` | Home Assistant | Core state, safe or recovery mode, chosen entities going unavailable, unavailable count, pending updates |
+| `audiobookshelf` | Audiobookshelf | Reachability, setup, API token, libraries without folders, optional backup age |
+| `n8n` | n8n | Readiness (database and migrations), failed workflow executions in a time window, active workflows |
 | `http` | Anything with an HTTP endpoint, including your own apps | Status code, body text, or a JSON field value |
 
-Thresholds are configurable per integration; see [config.example.yaml](config.example.yaml). On the roadmap: remote hosts via satellites, Proxmox Backup Server, SMART and temperatures, Jellyfin, Home Assistant, Audiobookshelf, n8n, Suwayomi, qBittorrent, BookOrbit, Hermes Agent and more.
+Thresholds are configurable per integration; see [config.example.yaml](config.example.yaml). On the roadmap: remote hosts via satellites, Proxmox Backup Server, SMART and temperatures, Suwayomi, qBittorrent, BookOrbit, Hermes Agent and more.
 
 ### Notifiers
 

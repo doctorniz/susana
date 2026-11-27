@@ -50,16 +50,41 @@ integrations:
     url: http://prowlarr:9696
     api_key: ${PROWLARR_API_KEY}
 
+  # Jellyfin. API key from Dashboard > API Keys (optional: without it only reachability).
+  - name: jellyfin
+    kind: jellyfin
+    url: http://jellyfin:8096
+    api_key: ${JELLYFIN_API_KEY}
+    # ignore_tasks: [Extract Chapter Images]
+
+  # Home Assistant. Long-lived access token from your profile > Security.
+  - name: home-assistant
+    kind: homeassistant
+    url: http://homeassistant:8123
+    api_key: ${HA_TOKEN}
+    watch_entities: [lock.front_door, sensor.freezer_temperature]
+    # unavailable_warn: 10         # warn when this many entities are unavailable
+    # ignore_entities: [sensor.flaky]
+    # warn_on_updates: true        # pending updates are OK by default
+
+  # Audiobookshelf. API token from Settings > Users (optional).
+  - name: audiobookshelf
+    kind: audiobookshelf
+    url: http://audiobookshelf:80
+    api_key: ${ABS_TOKEN}
+    # backup_max_age: 48h          # needs an admin token
+
+  # n8n. API key from Settings > n8n API (optional: without it only readiness).
+  - name: n8n
+    kind: n8n
+    url: http://n8n:5678
+    api_key: ${N8N_API_KEY}
+    failed_window: 1h              # failed executions in this window raise a warning
+    # failed_crit: 5
+    # ignore_workflows: [Flaky scraper]
+
   # Any app with an HTTP endpoint, including your own. Pick what "healthy" means:
   # expect_status, body_contains, or json_field + json_equals.
-  - name: jellyfin
-    kind: http
-    url: http://jellyfin:8096/health
-    body_contains: Healthy
-  - name: home-assistant
-    kind: http
-    url: http://homeassistant:8123/api/
-    api_key: ${HA_TOKEN}            # sent as "Authorization: Bearer ..."
   - name: my-app
     kind: http
     url: http://my-app:3000/health
