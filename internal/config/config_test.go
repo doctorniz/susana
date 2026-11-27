@@ -40,3 +40,13 @@ func TestParseRejectsDuplicates(t *testing.T) {
 		t.Fatal("expected duplicate name error")
 	}
 }
+
+func TestExampleConfigParses(t *testing.T) {
+	c, err := Load("../../config.example.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(c.Integrations) == 0 || len(c.Notifiers) == 0 {
+		t.Errorf("example config looks empty: %+v", c)
+	}
+}

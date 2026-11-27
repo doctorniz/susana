@@ -105,3 +105,56 @@ func Kinds() []string {
 	sort.Strings(out)
 	return out
 }
+
+// Float reads a numeric setting, accepting YAML ints and floats.
+func (o Options) Float(key string, def float64) float64 {
+	switch v := o.Settings[key].(type) {
+	case int:
+		return float64(v)
+	case float64:
+		return v
+	}
+	return def
+}
+
+// String reads a string setting.
+func (o Options) String(key, def string) string {
+	if v, ok := o.Settings[key].(string); ok {
+		return v
+	}
+	return def
+}
+
+// Bool reads a boolean setting.
+func (o Options) Bool(key string, def bool) bool {
+	if v, ok := o.Settings[key].(bool); ok {
+		return v
+	}
+	return def
+}
+
+// StringList reads a list setting; a single string becomes a one-item list.
+func (o Options) StringList(key string) []string {
+	switch v := o.Settings[key].(type) {
+	case string:
+		return []string{v}
+	case []any:
+		out := make([]string, 0, len(v))
+		for _, x := range v {
+			out = append(out, fmt.Sprint(x))
+		}
+		return out
+	}
+	return nil
+}
+
+// Percent levels a usage fraction (0..1) against warn/crit percentages.
+func Percent(used, warnPct, critPct float64) Status {
+	switch pct := used * 100; {
+	case pct >= critPct:
+		return StatusCritical
+	case pct >= warnPct:
+		return StatusWarning
+	}
+	return StatusOK
+}

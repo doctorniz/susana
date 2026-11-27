@@ -23,7 +23,10 @@ import (
 
 	// Integrations register themselves on import.
 	_ "github.com/doctorniz/susana/internal/integration/arr"
+	_ "github.com/doctorniz/susana/internal/integration/docker"
+	_ "github.com/doctorniz/susana/internal/integration/host"
 	_ "github.com/doctorniz/susana/internal/integration/httpcheck"
+	_ "github.com/doctorniz/susana/internal/integration/proxmox"
 )
 
 var version = "dev"

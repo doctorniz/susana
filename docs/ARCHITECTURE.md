@@ -14,6 +14,9 @@ integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
 | `internal/config` | Loads `susana.yaml`, expands `${VAR}` from the environment |
 | `internal/integration` | The plugin interface and registry |
 | `internal/integration/arr` | One shared integration for Sonarr, Radarr, Lidarr, Readarr, Prowlarr |
+| `internal/integration/proxmox` | Proxmox VE nodes, guests and storage via a read-only API token |
+| `internal/integration/host` | Load, memory and disk of a Linux host from `/proc` and `statfs` |
+| `internal/integration/docker` | Container state via the Engine API (socket or socket proxy) |
 | `internal/integration/httpcheck` | Generic HTTP check for any app, including self-built ones |
 | `internal/monitor` | Runs checks on an interval, tracks state, notifies on change |
 | `internal/notify` | Send-only chat channels |
@@ -40,7 +43,8 @@ integrations ──► monitor ──► notifiers (Discord, Telegram, ntfy)
 
 - **v0.1:** *arr apps, generic HTTP, Discord/Telegram/ntfy, LLM explanations (this scaffold)
 - **v0.1.x:** read-only HTTP API and MCP server (done)
-- **v0.2:** Docker socket, host metrics, Proxmox API, Jellyfin, Home Assistant, Audiobookshelf, n8n
+- **v0.1.x:** Proxmox, host and Docker checks (done)
+- **v0.2:** Jellyfin, Home Assistant, Audiobookshelf, n8n, Proxmox Backup Server, SMART and temperatures
 - **v0.3:** SQLite history, incident grouping, Telegram/Discord chat (ask questions)
 - **v0.4:** Remote satellites, Suwayomi, qBittorrent, BookOrbit, Hermes Agent
 - **Later:** approved actions, weekly digest, community plugin registry
