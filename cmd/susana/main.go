@@ -23,9 +23,13 @@ import (
 
 	// Integrations register themselves on import.
 	_ "github.com/doctorniz/susana/internal/integration/arr"
+	_ "github.com/doctorniz/susana/internal/integration/audiobookshelf"
 	_ "github.com/doctorniz/susana/internal/integration/docker"
+	_ "github.com/doctorniz/susana/internal/integration/homeassistant"
 	_ "github.com/doctorniz/susana/internal/integration/host"
 	_ "github.com/doctorniz/susana/internal/integration/httpcheck"
+	_ "github.com/doctorniz/susana/internal/integration/jellyfin"
+	_ "github.com/doctorniz/susana/internal/integration/n8n"
 	_ "github.com/doctorniz/susana/internal/integration/proxmox"
 )
 
